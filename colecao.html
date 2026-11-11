@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Retro Games Conquista | Minha Coleção</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Rubik:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- CABEÇALHO -->
+    <header class="topo">
+      <a href="index.html" class="logo">
+        <span aria-hidden="true">🎮</span>
+        <span class="logo__nome">Retro Games<br /><em>Conquista</em></span>
+      </a>
+
+      <nav class="menu" aria-label="Principal">
+        <a href="index.html" class="menu-item">🏠 Início</a>
+        <a href="colecao.html" class="menu-item active">🕹️ Minha Coleção</a>
+        <a href="#campoBusca" class="menu-item">🔎 Buscar Jogos</a>
+        <a href="#estatisticas" class="menu-item">📊 Estatísticas</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- BANNER (imagem em imagens/banner.jpg) -->
+      <section class="hero">
+        <h1>Retro Games <em>Conquista</em></h1>
+        <p>
+          Reviva os clássicos, organize sua coleção e mantenha suas memórias
+          vivas.
+        </p>
+        <button id="btnAdicionar" class="btn" type="button">
+          + Adicionar jogo
+        </button>
+      </section>
+
+      <!-- ESTATÍSTICAS -->
+      <section class="stats" id="estatisticas">
+        <div class="stat-card">
+          <span aria-hidden="true">🎮</span>
+          <div>
+            <h2 id="totalJogos">0</h2>
+            <p>Jogos na coleção</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span aria-hidden="true">⭐</span>
+          <div>
+            <h2 id="totalFavoritos">0</h2>
+            <p>Favoritos</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span aria-hidden="true">💾</span>
+          <div>
+            <h2>V1.0</h2>
+            <p>Versão do sistema</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FORMULÁRIO -->
+      <section id="formularioArea" class="form-area hidden">
+        <h2>Adicionar novo jogo</h2>
+        <form id="formJogo">
+          <input
+            type="text"
+            id="nomeJogo"
+            placeholder="Nome do jogo"
+            required
+          />
+          <input
+            type="text"
+            id="plataforma"
+            placeholder="Plataforma"
+            required
+          />
+          <input type="text" id="descricao" placeholder="Descrição do jogo" />
+          <button type="submit" class="btn">Salvar jogo</button>
+        </form>
+      </section>
+
+      <!-- COLEÇÃO -->
+      <section class="collection" id="colecao">
+        <div class="section-header">
+          <div>
+            <h2>Minha coleção</h2>
+            <p>Seus jogos cadastrados</p>
+          </div>
+          <input type="search" id="campoBusca" placeholder="Buscar jogo..." />
+        </div>
+
+        <!-- Os jogos são inseridos pelo JavaScript -->
+        <div id="listaJogos" class="games-grid"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Retro Games Conquista © 2026 — Games. Memories. Forever.
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

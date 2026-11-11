@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Retro Games Conquista | Início</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Rubik:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- CABEÇALHO (igual nas duas páginas; muda só o item ativo) -->
+    <header class="topo">
+      <a href="index.html" class="logo">
+        <span aria-hidden="true">🎮</span>
+        <span class="logo__nome">Retro Games<br /><em>Conquista</em></span>
+      </a>
+
+      <nav class="menu" aria-label="Principal">
+        <a href="index.html" class="menu-item active">🏠 Início</a>
+        <a href="colecao.html" class="menu-item">🕹️ Minha Coleção</a>
+        <a href="colecao.html#campoBusca" class="menu-item">🔎 Buscar Jogos</a>
+        <a href="colecao.html#estatisticas" class="menu-item"
+          >📊 Estatísticas</a
+        >
+      </nav>
+    </header>
+
+    <main>
+      <!-- BANNER (imagem em imagens/banner.jpg) -->
+      <section class="hero">
+        <h1>Retro Games <em>Conquista</em></h1>
+        <p>Reviva a nostalgia, colecione, troque e compartilhe jogos retrô!</p>
+
+        <form class="busca" action="colecao.html" method="get">
+          <input
+            type="search"
+            name="busca"
+            placeholder="Buscar jogos..."
+            aria-label="Buscar jogos"
+          />
+          <button type="submit" class="btn">Buscar</button>
+        </form>
+      </section>
+
+      <!-- DESTAQUES + POPULARES -->
+      <div class="duas-colunas">
+        <section class="painel">
+          <div class="painel__topo">
+            <h2>⭐ Destaques da Semana</h2>
+            <a href="colecao.html" class="link-mais">Ver mais →</a>
+          </div>
+
+          <!-- Imagens na pasta imagens/: mario.jpg, zelda.jpg, sonic.jpg -->
+          <div class="cards">
+            <article class="card">
+              <img src="imagens/mario.jpg" alt="Capa de Super Mario Bros." />
+              <h3>Super Mario Bros.</h3>
+              <span class="tag">Plataforma</span>
+              <p class="preco">R$ 120,00</p>
+            </article>
+
+            <article class="card">
+              <img src="imagens/zelda.jpg" alt="Capa de The Legend of Zelda" />
+              <h3>The Legend of Zelda</h3>
+              <span class="tag">Aventura</span>
+              <p class="preco">R$ 180,00</p>
+            </article>
+
+            <article class="card">
+              <img src="imagens/sonic.jpg" alt="Capa de Sonic the Hedgehog" />
+              <h3>Sonic the Hedgehog</h3>
+              <span class="tag">Plataforma</span>
+              <p class="preco">R$ 90,00</p>
+            </article>
+          </div>
+        </section>
+
+        <aside class="painel">
+          <div class="painel__topo">
+            <h2>🏆 Jogos Mais Populares</h2>
+          </div>
+
+          <ol class="ranking">
+            <li>
+              <span class="pos">1</span
+              ><img src="imagens/mario.jpg" alt="" /><span class="nome"
+                >Super Mario Bros.</span
+              ><span class="views">👁 12.5k</span>
+            </li>
+            <li class="destaque">
+              <span class="pos">2</span
+              ><img src="imagens/sonic.jpg" alt="" /><span class="nome"
+                >Sonic the Hedgehog</span
+              ><span class="views">👁 10.2k</span>
+            </li>
+            <li>
+              <span class="pos">3</span
+              ><img src="imagens/zelda.jpg" alt="" /><span class="nome"
+                >The Legend of Zelda</span
+              ><span class="views">👁 8.7k</span>
+            </li>
+          </ol>
+        </aside>
+      </div>
+
+      <!-- CHAMADA FINAL -->
+      <section class="chamada">
+        <div>
+          <h2>Sua coleção, nossa comunidade!</h2>
+          <p>Conecte-se com outros colecionadores e faça trocas incríveis!</p>
+        </div>
+        <a href="colecao.html" class="btn">Ver minha coleção →</a>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Retro Games Conquista © 2026 — Games. Memories. Forever.
+    </footer>
+
+    <!-- Sem script da API aqui: ele só é usado em colecao.html -->
+  </body>
+</html>
