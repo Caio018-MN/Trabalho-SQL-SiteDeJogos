@@ -26,9 +26,12 @@
 }
 
 body {
-  background: var(--fundo);
   color: var(--texto);
   font: 1rem/1.5 var(--fonte-texto);
+  background:
+    linear-gradient(rgba(20, 18, 58, 0.88), rgba(20, 18, 58, 0.88)),
+    url("imagens/loja.jpg") center / cover fixed no-repeat,
+    var(--fundo);
 }
 
 a {
@@ -519,5 +522,170 @@ input:focus {
   }
   .ranking .views {
     grid-column: 3;
+  }
+}
+
+/* =========================================================
+   LOGIN E CADASTRO (login.html)
+   ========================================================= */
+
+/* Botão "Entrar" do menu: mesmo formato dos outros, com contorno */
+.menu-item--login {
+  border: 2px solid var(--borda);
+}
+.menu-item--login:hover {
+  border-color: var(--roxo-claro);
+}
+.menu-item--login.active {
+  border-color: var(--roxo);
+}
+
+/* Caixa central */
+.auth {
+  position: relative;
+  max-width: 460px;
+  margin: 40px auto 0;
+  padding: 24px;
+  background: var(--painel);
+  border: 3px solid var(--borda);
+  border-radius: 10px;
+}
+
+/* Radios que controlam as abas: ficam escondidos, mas acessíveis pelo teclado */
+.auth > input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Abas */
+.auth__abas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.auth__abas label {
+  padding: 11px;
+  text-align: center;
+  font-weight: 600;
+  background: var(--fundo-2);
+  border: 2px solid var(--borda);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.auth__abas label:hover {
+  background: var(--fundo);
+}
+
+#aba-entrar:checked ~ .auth__abas label[for="aba-entrar"],
+#aba-cadastro:checked ~ .auth__abas label[for="aba-cadastro"] {
+  background: var(--roxo);
+  border-color: var(--roxo);
+  box-shadow: 0 3px 0 #3e25b8;
+}
+#aba-entrar:focus-visible ~ .auth__abas label[for="aba-entrar"],
+#aba-cadastro:focus-visible ~ .auth__abas label[for="aba-cadastro"] {
+  outline: 3px solid var(--amarelo);
+  outline-offset: 2px;
+}
+
+/* Mostra só o formulário da aba escolhida */
+#aba-entrar:checked ~ #form-cadastro {
+  display: none;
+}
+#aba-cadastro:checked ~ #form-entrar {
+  display: none;
+}
+
+/* Formulário */
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.auth__form h1 {
+  font: 700 1.8rem/1.1 var(--fonte-titulo);
+  color: var(--amarelo);
+}
+.auth__sub {
+  color: var(--suave);
+  margin-top: -8px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.campo label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.campo input {
+  width: 100%;
+}
+
+.auth__linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.check input {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  accent-color: var(--roxo);
+}
+
+.link-suave {
+  color: var(--roxo-claro);
+}
+.link-suave:hover {
+  color: var(--texto);
+  text-decoration: underline;
+}
+
+.btn--cheio {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.05rem;
+}
+
+.auth__troca {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--suave);
+}
+.link-troca {
+  color: var(--roxo-claro);
+  font-weight: 600;
+  cursor: pointer;
+}
+.link-troca:hover {
+  color: var(--texto);
+  text-decoration: underline;
+}
+
+/* Campo com erro (só depois que a pessoa digita algo inválido) */
+.campo input:not(:placeholder-shown):invalid {
+  border-color: #ff6b81;
+}
+
+@media (max-width: 520px) {
+  .auth {
+    margin: 24px 12px 0;
+    padding: 18px;
   }
 }
