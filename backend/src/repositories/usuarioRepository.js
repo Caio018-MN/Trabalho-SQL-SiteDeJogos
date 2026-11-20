@@ -1,17 +1,14 @@
-const { obterColecao } = require("../config/database");
-const { criarUsuario } = require("../models/usuario");
+import { obterColecao } from '../config/database.js';
+import { criarUsuario } from '../models/usuario.js';
 
-
-async function cadastrarUsuario(dados) {
-
-    const usuario = criarUsuario(dados);
-
-    const resultado = await obterColecao("usuarios").insertOne(usuario);
-
-    return resultado;
+export async function buscarUsuarioPorEmail(email) {
+  const colecao = obterColecao('users');
+  return await colecao.findOne({ email });
 }
 
-
-module.exports = {
-    cadastrarUsuario
-};
+export async function cadastrarUsuario(dados) {
+  const usuario = criarUsuario(dados);
+  const colecao = obterColecao('users');
+  const resultado = await colecao.insertOne(usuario);
+  return { _id: resultado.insertedId, ...usuario };
+}

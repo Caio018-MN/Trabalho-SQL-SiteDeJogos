@@ -1,62 +1,49 @@
-const { MongoClient } = require('mongodb');
+import { MongoClient } from 'mongodb';
+
 let client;
 let db;
 
-async function conectarBanco() {
-    const uri  = process.env.MONGODB_URI;
-    const nomeBanco = process.env.MONGODB_DB_NAME;
+export async function conectarBanco() {
+  const uri = process.env.MONGODB_URI;
+  const nomeBanco = process.env.MONGODB_DB_NAME;
 
-    if (!uri) {
-        throw new Error("MONGODB_URI não configurada.");
-    }
+  if (!uri) {
+    throw new Error("MONGODB_URI não configurada.");
+  }
 
-    if (!nomeBanco) {
-        throw new Error("MONGODB_DB_NAME não configurada.");
-    }
+  if (!nomeBanco) {
+    throw new Error("MONGODB_DB_NAME não configurada.");
+  }
 
-    client = new MongoClient(uri);
+  client = new MongoClient(uri);
 
-    await client.connect();
+  await client.connect();
 
-    db = client.db(nomeBanco);
+  db = client.db(nomeBanco);
 
-    console.log("MongoDB conectado com sucesso!");
+  console.log("MongoDB conectado com sucesso!");
 
-    return db;
+  return db;
 }
 
-function obterBanco() {
+export function obterBanco() {
+  if (!db) {
+    throw new Error("Banco de dados não conectado.");
+  }
 
-    if (!db) {
-        throw new Error("Banco de dados não conectado.");
-    }
-
-    return db;
+  return db;
 }
 
-         // funçao de coleçao
-function obterColecao(nome) {
-
-    return obterBanco().collection(nome);
-}
-async function fecharConexao() {
-    if (client) {
-        await client.close();
-        client = null;
-        db = null;
-
-        console.log("Conexão com MongoDB encerrada.");
-    }
+export function obterColecao(nome) {
+  return obterBanco().collection(nome);
 }
 
+export async function fecharConexao() {
+  if (client) {
+    await client.close();
+    client = null;
+    db = null;
 
-
-
-
-          // Disponibiliza as funções para outros arquivos
-module.exports = {
-    conectarBanco,
-    obterBanco,
-    obterColecao,
-    fecharConexao
-};
+    console.log("Conexão com MongoDB encerrada.");
+  }
+}

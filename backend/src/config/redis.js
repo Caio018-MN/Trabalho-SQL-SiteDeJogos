@@ -1,50 +1,28 @@
+import { createClient } from 'redis';
 
-const { createClient } = require('redis');
+let clienteRedis = null;
 
-let redisClient;
+export async function conectarRedis() {
+  try {
+    const url = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+    clienteRedis = createClient({ url });
 
-async function conectarRedis() {
-    const url = process.env.REDIS_URL;
-
-    if (!url) {
-        throw new Error("REDIS_URL não configurada.");
-    }
-
-    redisClient = createClient({
-        url: url
+    clienteRedis.on('error', (erro) => {
+      console.warn('Aviso Redis:', erro.message);
     });
 
-    redisClient.on('error', (erro) => {
-        console.error("Erro na conexão Redis:", erro);
-    });
-
-    await redisClient.connect();
-
-    console.log("Redis conectado com sucesso!");
-
-    return redisClient;
+    await clienteRedis.connect();
+    console.log('Redis conectado com sucesso!');
+    return clienteRedis;
+  } catch (erro) {
+    console.warn('Aviso: Não foi possível conectar ao Redis. O ranking ficará inativo temporariamente.');
+    clienteRedis = null;
+  }
 }
 
-function obterRedis() {
-    if (!redisClient || !redisClient.isReady) {
-        throw new Error("Redis não está conectado.");
-    }
-
-    return redisClient;
+export function obterRedis() {
+  if (!clienteRedis) {
+    throw new Error('Cliente Redis não conectado ou indisponível.');
+  }
+  return clienteRedis;
 }
-
-async function fecharRedis() {
-    if (redisClient && redisClient.isOpen) {
-        await redisClient.quit();
-        redisClient = null;
-
-        console.log("Conexão com Redis encerrada.");
-    }
-}
-
-module.exports = {
-    conectarRedis,
-    obterRedis,
-    fecharRedis
-};
-
