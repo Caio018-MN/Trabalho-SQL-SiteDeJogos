@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,9 +8,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Rubik:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
   <!-- CABEÇALHO -->
@@ -23,7 +27,7 @@
       <a href="index.html" class="menu-item">🏠 Início</a>
       <a href="colecao.html" class="menu-item active">🕹️ Minha Coleção</a>
       <a href="#estatisticas" class="menu-item">📊 Estatísticas</a>
-      <a href="login.html" class="menu-item menu-item--login">🔑 Entrar</a>
+      <a href="login.html" id="linkAuth" class="menu-item menu-item--login">🔑 Entrar</a>
     </nav>
   </header>
 
@@ -40,15 +44,24 @@
     <section class="stats" id="estatisticas">
       <div class="stat-card">
         <span aria-hidden="true">🎮</span>
-        <div><h2 id="totalJogos">0</h2><p>Jogos na coleção</p></div>
+        <div>
+          <h2 id="totalJogos">0</h2>
+          <p>Jogos na coleção</p>
+        </div>
       </div>
       <div class="stat-card">
         <span aria-hidden="true">⭐</span>
-        <div><h2 id="totalFavoritos">0</h2><p>Favoritos</p></div>
+        <div>
+          <h2 id="totalFavoritos">0</h2>
+          <p>Favoritos</p>
+        </div>
       </div>
       <div class="stat-card">
         <span aria-hidden="true">💾</span>
-        <div><h2>V1.0</h2><p>Versão do sistema</p></div>
+        <div>
+          <h2>V1.0</h2>
+          <p>Versão do sistema</p>
+        </div>
       </div>
     </section>
 
@@ -74,15 +87,191 @@
       </div>
 
       <!-- Os jogos são inseridos pelo JavaScript -->
-      <div id="listaJogos" class="games-grid"></div>
+      <div id="lista-jogos" class="games-grid"></div>
     </section>
-
   </main>
 
   <footer class="footer">
     Retro Games Conquista © 2026 — Games. Memories. Forever.
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    const API_JOGOS = 'http://localhost:5000/api/jogos';
+    const token = localStorage.getItem('token');
+
+    // 1. Guarda de autenticação: redireciona se não estiver autenticado
+    if (!token) {
+      alert('Precisa de iniciar sessão para aceder à sua coleção.');
+      window.location.href = 'login.html';
+    }
+
+    // 2. Alternar visibilidade do formulário de adicionar jogo
+    const btnAdicionar = document.getElementById('btnAdicionar');
+    const formularioArea = document.getElementById('formularioArea');
+    if (btnAdicionar && formularioArea) {
+      btnAdicionar.addEventListener('click', () => {
+        formularioArea.classList.toggle('hidden');
+      });
+    }
+
+    // 3. Carregar apenas os jogos do utilizador autenticado
+    async function carregarJogos(termoBusca = '') {
+      const container = document.getElementById('lista-jogos');
+      const totalJogosEl = document.getElementById('totalJogos');
+      const totalFavoritosEl = document.getElementById('totalFavoritos');
+
+      try {
+        const url = termoBusca ? `${API_JOGOS}?busca=${encodeURIComponent(termoBusca)}` : API_JOGOS;
+        const resposta = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        // Se o token for inválido ou expirar, limpa a sessão
+        if (resposta.status === 401 || resposta.status === 403) {
+          localStorage.clear();
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const jogos = await resposta.json();
+
+        if (totalJogosEl) totalJogosEl.textContent = jogos.length;
+        if (totalFavoritosEl) {
+          totalFavoritosEl.textContent = jogos.filter(j => j.favorito).length;
+        }
+
+        container.innerHTML = '';
+
+        if (jogos.length === 0) {
+          container.innerHTML = '<p style="color: #ccc; grid-column: 1 / -1; text-align: center;">Nenhum jogo na sua coleção. Adicione o seu primeiro jogo acima!</p>';
+          return;
+        }
+
+        jogos.forEach(jogo => {
+          const card = document.createElement('article');
+          card.className = 'game-card';
+          card.innerHTML = `
+            <img src="${jogo.imagem || 'imagens/banner.jpg'}" alt="${jogo.nome}" class="game-card__capa" onerror="this.src='imagens/banner.jpg'">
+            <div class="game-card__corpo">
+              <h3>${jogo.nome}</h3>
+              <p><strong>Plataforma:</strong> ${jogo.plataforma}</p>
+              ${jogo.anoLancamento ? `<p><strong>Ano:</strong> ${jogo.anoLancamento}</p>` : ''}
+              <div class="game-card__acoes" style="margin-top: 10px; display: flex; gap: 8px;">
+                <button type="button" class="btn btn-fav" onclick="alternarFavorito('${jogo._id}')">
+                  ${jogo.favorito ? '★ Favorito' : '☆ Favoritar'}
+                </button>
+                <button type="button" class="btn btn-remover" onclick="removerJogo('${jogo._id}')" style="background: #c0392b;">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (erro) {
+        console.error(erro);
+        container.innerHTML = `<p style="color: #ff5555; grid-column: 1 / -1; text-align: center;">Erro: ${erro.message}</p>`;
+      }
+    }
+
+    // 4. Alternar favorito enviando o Token
+    async function alternarFavorito(id) {
+      try {
+        const res = await fetch(`${API_JOGOS}/${id}/favorito`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (res.ok) carregarJogos();
+      } catch (erro) {
+        alert('Erro ao atualizar favorito.');
+      }
+    }
+
+    // 5. Remover jogo enviando o Token
+    async function removerJogo(id) {
+      if (!confirm('Deseja realmente remover este jogo da sua coleção?')) return;
+      try {
+        const res = await fetch(`${API_JOGOS}/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (res.ok) carregarJogos();
+      } catch (erro) {
+        alert('Erro ao excluir jogo.');
+      }
+    }
+
+    // 6. Submissão do formulário associando ao utilizador
+    const formJogo = document.getElementById('formJogo');
+    if (formJogo) {
+      formJogo.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('nomeJogo').value;
+        const plataforma = document.getElementById('plataforma').value;
+        const descricao = document.getElementById('descricao')?.value || '';
+
+        try {
+          const res = await fetch(API_JOGOS, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({ nome, plataforma, genero: descricao })
+          });
+
+          if (!res.ok) throw new Error('Não foi possível gravar o jogo.');
+
+          formJogo.reset();
+          formularioArea.classList.add('hidden');
+          carregarJogos();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    }
+
+    // 7. Atualização do perfil no cabeçalho
+    function atualizarInterfaceUsuario() {
+      const usuarioRaw = localStorage.getItem('usuario');
+      const linkAuth = document.getElementById('linkAuth') || document.querySelector('.menu-item--login');
+
+      if (usuarioRaw && linkAuth) {
+        const usuario = JSON.parse(usuarioRaw);
+        const nome = usuario.nomeExibicao || 'Jogador';
+
+        linkAuth.outerHTML = `
+          <div id="usuarioLogado" style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: #4ade80; font-weight: 500;">👤 ${nome}</span>
+            <button id="btnSair" type="button" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 0.75rem;">
+              Sair
+            </button>
+          </div>
+        `;
+
+        document.getElementById('btnSair').addEventListener('click', () => {
+          localStorage.removeItem('token');
+          localStorage.removeItem('usuario');
+          window.location.href = 'login.html';
+        });
+      }
+    }
+
+    // Inicialização direta
+    atualizarInterfaceUsuario();
+    carregarJogos();
+
+    const campoBusca = document.getElementById('campoBusca');
+    if (campoBusca) {
+      campoBusca.addEventListener('input', (e) => carregarJogos(e.target.value));
+    }
+  </script>
 </body>
+
 </html>

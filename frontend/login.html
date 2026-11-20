@@ -163,5 +163,85 @@
     <footer class="footer">
       Retro Games Conquista © 2026 — Games. Memories. Forever.
     </footer>
+    
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const API_AUTH = 'http://localhost:5000/api/auth';
+
+    // 1. Formulário de Cadastro (Criar conta)
+    const formCadastro = document.getElementById('form-cadastro');
+    if (formCadastro) {
+      formCadastro.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const nomeExibicao = document.getElementById('cad-nome').value;
+        const email = document.getElementById('cad-email').value;
+        const senha = document.getElementById('cad-senha').value;
+        const confirmaSenha = document.getElementById('cad-confirma').value;
+
+        if (senha !== confirmaSenha) {
+          alert('As senhas não coincidem!');
+          return;
+        }
+
+        try {
+          const resposta = await fetch(`${API_AUTH}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nomeExibicao, email, senha })
+          });
+
+          const dados = await resposta.json();
+          if (!resposta.ok) {
+            throw new Error(dados.mensagem || 'Falha ao criar conta.');
+          }
+
+          localStorage.setItem('token', dados.token);
+          localStorage.setItem('usuario', JSON.stringify(dados.usuario));
+
+          alert('Conta criada com sucesso! A redirecionar...');
+          window.location.href = 'colecao.html';
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    }
+
+    // 2. Formulário de Login (Entrar)
+    const formEntrar = document.getElementById('form-entrar');
+    if (formEntrar) {
+      formEntrar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const email = document.getElementById('login-email').value;
+        const senha = document.getElementById('login-senha').value;
+
+        try {
+          const resposta = await fetch(`${API_AUTH}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha })
+          });
+
+          const dados = await resposta.json();
+          if (!resposta.ok) {
+            throw new Error(dados.mensagem || 'Falha ao entrar.');
+          }
+
+          localStorage.setItem('token', dados.token);
+          localStorage.setItem('usuario', JSON.stringify(dados.usuario));
+
+          alert(`Bem-vindo de volta, ${dados.usuario.nomeExibicao}!`);
+          window.location.href = 'colecao.html';
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    }
+  });
+</script>
+
   </body>
 </html>
