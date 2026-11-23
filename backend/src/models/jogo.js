@@ -1,30 +1,17 @@
-function criarJogo(dados) {
+import mongoose from 'mongoose';
 
-    if (!dados.titulo) {
-        throw new Error("Título do jogo é obrigatório.");
-    }
+const jogoSchema = new mongoose.Schema(
+  {
+    nome: { type: String, required: true, trim: true },
+    descricao: { type: String, trim: true },
+    categoria: { type: String, default: 'Geral' },
+    preco: { type: Number, default: 0 },
+    imagem: { type: String, default: '' },
+    favorito: { type: Boolean, default: false }
+  },
+  { timestamps: true }
+);
 
-    if (!dados.plataforma) {
-        throw new Error("Plataforma é obrigatória.");
-    }
+const Jogo = mongoose.models.Jogo || mongoose.model('Jogo', jogoSchema);
 
-    if (!dados.genero) {
-        throw new Error("Gênero é obrigatório.");
-    }
-
-    if (!Number.isInteger(dados.anoLancamento)) {
-        throw new Error("Ano de lançamento deve ser um número inteiro.");
-    }
-
-    return {
-        titulo: dados.titulo,
-        plataforma: dados.plataforma,
-        genero: dados.genero,
-        anoLancamento: dados.anoLancamento,
-        descricao: dados.descricao || ""
-    };
-}
-
-module.exports = {
-    criarJogo
-};
+export default Jogo;

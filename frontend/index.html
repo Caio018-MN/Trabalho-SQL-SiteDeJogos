@@ -1,119 +1,106 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Retro Games Conquista | Início</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Rubik:wght@400;500;600&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-  <!-- CABEÇALHO (igual nas duas páginas; muda só o item ativo) -->
+
+  <!-- CABEÇALHO -->
   <header class="topo">
     <a href="index.html" class="logo">
       <span aria-hidden="true">🎮</span>
-      <span class="logo__nome">Retro Games<br /><em>Conquista</em></span>
+      <span class="logo__nome">Retro Games<br><em>Conquista</em></span>
     </a>
 
     <nav class="menu" aria-label="Principal">
       <a href="index.html" class="menu-item active">🏠 Início</a>
       <a href="colecao.html" class="menu-item">🕹️ Minha Coleção</a>
-      <a href="colecao.html#estatisticas" class="menu-item">📊 Estatísticas</a>
       <a href="login.html" id="linkAuth" class="menu-item menu-item--login">🔑 Entrar</a>
     </nav>
   </header>
 
   <main>
-    <!-- BANNER (imagem em imagens/banner.jpg) -->
+    <!-- HERO COM BUSCA -->
     <section class="hero">
-      <h1>Retro Games <em>Conquista</em></h1>
+      <h1>Retro Games<br><em>Conquista</em></h1>
       <p>Reviva a nostalgia, colecione, troque e compartilhe jogos retrô!</p>
-
-      <form class="busca" action="colecao.html" method="get">
-        <input type="search" name="busca" placeholder="Buscar jogos..." aria-label="Buscar jogos" />
-        <button type="submit" class="btn">Buscar</button>
+      <form id="formBusca" class="busca" onsubmit="event.preventDefault();"
+        style="display: flex; gap: 8px; max-width: 400px; margin-top: 15px;">
+        <input type="text" id="campoBusca" placeholder="Buscar jogos..."
+          style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: #fff;">
+        <button type="submit" class="btn" style="padding: 10px 20px;">Buscar</button>
       </form>
     </section>
 
-    <!-- DESTAQUES + POPULARES -->
-    <div class="duas-colunas">
-      <section class="painel">
-        <div class="painel__topo">
-          <h2>⭐ Destaques da Semana</h2>
-          <a href="colecao.html" class="link-mais">Ver mais →</a>
+    <!-- SEÇÃO PRINCIPAL (DESTAQUES E RANKING) -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-top: 30px;">
+
+      <!-- DESTAQUES DA SEMANA -->
+      <section class="collection"
+        style="margin: 0; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 20px;">
+        <div class="section-header"
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <h2 style="font-size: 1.3rem; margin: 0;">⭐ Destaques da Semana</h2>
+            <span id="origem-destaques" class="origem-tag mongodb"
+              style="font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.1); font-family: monospace;">🗄️
+              MongoDB</span>
+          </div>
+          <a href="colecao.html" style="color: #a78bfa; text-decoration: none; font-size: 0.9rem;">Ver mais →</a>
         </div>
 
-        <!-- Imagens na pasta imagens/: mario.jpg, zelda.jpg, sonic.jpg -->
-        <div class="cards">
-          <article class="card">
-            <img src="imagens/mario.jpg" alt="Capa de Super Mario Bros." />
-            <h3>Super Mario Bros.</h3>
-            <span class="tag">Plataforma</span>
-            <p class="preco">R$ 120,00</p>
-          </article>
-
-          <article class="card">
-            <img src="imagens/zelda.jpg" alt="Capa de The Legend of Zelda" />
-            <h3>The Legend of Zelda</h3>
-            <span class="tag">Aventura</span>
-            <p class="preco">R$ 180,00</p>
-          </article>
-
-          <article class="card">
-            <img src="imagens/sonic.jpg" alt="Capa de Sonic the Hedgehog" />
-            <h3>Sonic the Hedgehog</h3>
-            <span class="tag">Plataforma</span>
-            <p class="preco">R$ 90,00</p>
-          </article>
-        </div>
+        <div id="destaques-cards" class="games-grid"
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px;"></div>
       </section>
 
-      <aside class="painel">
-        <div class="painel__topo">
-          <h2>🏆 Jogos Mais Populares</h2>
+      <!-- JOGOS MAIS POPULARES -->
+      <aside
+        style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 20px;">
+        <div class="section-header" style="margin-bottom: 20px;">
+          <h2 style="font-size: 1.3rem; margin: 0;">🏆 Jogos Mais Populares</h2>
         </div>
-
-        <ol class="ranking">
-          <li>
-            <span class="pos">1</span><img src="imagens/mario.jpg" alt="" /><span class="nome">Super Mario
-              Bros.</span><span class="views">👁 12.5k</span>
-          </li>
-          <li class="destaque">
-            <span class="pos">2</span><img src="imagens/sonic.jpg" alt="" /><span class="nome">Sonic the
-              Hedgehog</span><span class="views">👁 10.2k</span>
-          </li>
-          <li>
-            <span class="pos">3</span><img src="imagens/zelda.jpg" alt="" /><span class="nome">The Legend of
-              Zelda</span><span class="views">👁 8.7k</span>
-          </li>
-        </ol>
+        <ul id="lista-ranking"
+          style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+          <li style="color: #94a3b8; font-size: 0.9rem;">A carregar ranking...</li>
+        </ul>
       </aside>
+
     </div>
 
-    <!-- CHAMADA FINAL -->
-    <section class="chamada">
+    <!-- BANNER COMUNIDADE -->
+    <section class="banner-comunidade"
+      style="margin-top: 35px; background: #4338ca; border-radius: 12px; padding: 24px; display: flex; justify-content: space-between; align-items: center;">
       <div>
-        <h2>Sua coleção, nossa comunidade!</h2>
-        <p>Conecte-se com outros colecionadores e faça trocas incríveis!</p>
+        <h3 style="margin: 0 0 6px 0; font-size: 1.2rem;">Sua coleção, nossa comunidade!</h3>
+        <p style="margin: 0; color: #c7d2fe; font-size: 0.95rem;">Conecte-se com outros colecionadores e faça trocas
+          incríveis!</p>
       </div>
-      <a href="colecao.html" class="btn">Ver minha coleção →</a>
+      <a href="colecao.html" class="btn" style="text-decoration: none; display: inline-block;">Ver minha coleção →</a>
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="footer" style="margin-top: 50px;">
     Retro Games Conquista © 2026 — Games. Memories. Forever.
   </footer>
 
-  <!-- Sem script da API aqui: ele só é usado em colecao.html -->
-
   <script>
+    const API_URL = 'http://localhost:5000/api';
+    const PLACEHOLDER_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='170' viewBox='0 0 300 170'><rect width='300' height='170' fill='%231b1850'/><text x='50%25' y='50%25' font-size='36' text-anchor='middle' dominant-baseline='central'>🎮</text></svg>";
+
+    let listaDestaquesGlobal = [];
+
+    // 1. Manter sessão do utilizador
     function atualizarInterfaceUsuario() {
       const usuarioRaw = localStorage.getItem('usuario');
       const linkAuth = document.getElementById('linkAuth') || document.querySelector('.menu-item--login');
@@ -124,13 +111,13 @@
           const nome = usuario.nomeExibicao || 'Jogador';
 
           linkAuth.outerHTML = `
-          <div id="usuarioLogado" style="display: flex; align-items: center; gap: 8px;">
-            <span style="color: #4ade80; font-weight: 500;">👤 ${nome}</span>
-            <button id="btnSair" type="button" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 0.75rem;">
-              Sair
-            </button>
-          </div>
-        `;
+            <div id="usuarioLogado" style="display: flex; align-items: center; gap: 8px;">
+              <span style="color: #4ade80; font-weight: 500;">👤 ${nome}</span>
+              <button id="btnSair" type="button" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 0.75rem;">
+                Sair
+              </button>
+            </div>
+          `;
 
           document.getElementById('btnSair').addEventListener('click', () => {
             localStorage.removeItem('token');
@@ -138,15 +125,169 @@
             window.location.reload();
           });
         } catch (e) {
-          console.error('Erro ao ler dados da sessão:', e);
+          console.error('Erro ao ler sessão:', e);
         }
       }
     }
 
-    // Executa ao carregar a página
-    atualizarInterfaceUsuario();
-  </script>
+    // 2. Registar clique no Redis
+    async function registarAcesso(jogoId) {
+      try {
+        await fetch(`${API_URL}/visualizacao/${jogoId}`, {
+          method: 'POST'
+        });
+        carregarRanking();
+      } catch (err) {
+        console.error('Falha ao registar visualização:', err);
+      }
+    }
 
+    // Renderizar cartões dinamicamente
+    function renderizarCartoes(jogos) {
+      const container = document.getElementById('destaques-cards');
+      container.innerHTML = '';
+
+      if (!jogos || jogos.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8; grid-column: 1 / -1; padding: 15px 0;">Nenhum jogo encontrado com esse termo.</p>';
+        return;
+      }
+
+      jogos.forEach(jogo => {
+        const card = document.createElement('article');
+        card.className = 'game-card';
+        card.style.cursor = 'pointer';
+        card.onclick = () => registarAcesso(jogo._id);
+        card.innerHTML = `
+          <img 
+            src="${jogo.imagem || PLACEHOLDER_IMG}" 
+            alt="${jogo.nome}" 
+            class="game-card__capa"
+            style="width: 100%; height: 130px; object-fit: cover; border-radius: 8px 8px 0 0;"
+            onerror="this.onerror=null; this.src='${PLACEHOLDER_IMG}';" 
+          />
+          <div class="game-card__corpo" style="padding: 12px;">
+            <h3 style="font-size: 1rem; margin: 0 0 6px 0;">${jogo.nome}</h3>
+            <span style="font-size: 0.75rem; background: #6366f1; padding: 2px 6px; border-radius: 4px; display: inline-block;">
+              ${jogo.categoria || jogo.plataforma || 'Retro'}
+            </span>
+            <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #fbbf24; font-weight: 500;">
+              ${jogo.preco && jogo.preco > 0 ? `R$ ${jogo.preco.toFixed(2)}` : 'Colecionável'}
+            </p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 3. Carregar Destaques da Semana
+    async function carregarDestaques() {
+      const container = document.getElementById('destaques-cards');
+      const tagOrigem = document.getElementById('origem-destaques');
+
+      try {
+        const res = await fetch(`${API_URL}/destaques`);
+        if (!res.ok) throw new Error('Falha na resposta da API');
+        const dados = await res.json();
+
+        if (tagOrigem) {
+          if (dados.origem === 'cache-redis') {
+            tagOrigem.textContent = '⚡ Cache Redis';
+            tagOrigem.style.color = '#38bdf8';
+          } else {
+            tagOrigem.textContent = '🗄️ MongoDB';
+            tagOrigem.style.color = '#fbbf24';
+          }
+        }
+
+        listaDestaquesGlobal = dados.jogos || [];
+        renderizarCartoes(listaDestaquesGlobal);
+      } catch (erro) {
+        console.error(erro);
+        container.innerHTML = '<p style="color: #ff6b81; grid-column: 1 / -1;">Não foi possível carregar os destaques.</p>';
+      }
+    }
+
+    // 4. Carregar Ranking dos Mais Populares
+    async function carregarRanking() {
+      const container = document.getElementById('lista-ranking');
+      if (!container) return;
+
+      try {
+        const res = await fetch(`${API_URL}/ranking`);
+        if (!res.ok) throw new Error('Falha ao consultar ranking');
+        const dados = await res.json();
+
+        container.innerHTML = '';
+
+        if (!dados.ranking || dados.ranking.length === 0) {
+          container.innerHTML = '<li style="color: #94a3b8; padding: 8px 0;">Sem acessos registados.</li>';
+          return;
+        }
+
+        dados.ranking.forEach(item => {
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.alignItems = 'center';
+          li.style.gap = '10px';
+          li.style.padding = '8px 10px';
+          li.style.background = 'rgba(255,255,255,0.04)';
+          li.style.borderRadius = '8px';
+          li.style.cursor = 'pointer';
+          li.onclick = () => registarAcesso(item.jogo._id);
+
+          li.innerHTML = `
+            <span style="font-weight: 700; color: #fbbf24; min-width: 24px;">#${item.posicao}</span>
+            <img 
+              src="${item.jogo.imagem || PLACEHOLDER_IMG}" 
+              alt="${item.jogo.nome}" 
+              style="width: 38px; height: 38px; object-fit: cover; border-radius: 6px;"
+              onerror="this.onerror=null; this.src='${PLACEHOLDER_IMG}';" 
+            />
+            <span style="flex: 1; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.jogo.nome}</span>
+            <span style="font-size: 0.8rem; color: #94a3b8;">👁 ${item.acessos}</span>
+          `;
+          container.appendChild(li);
+        });
+      } catch (erro) {
+        console.error(erro);
+        container.innerHTML = '<li style="color: #ff6b81;">Erro ao carregar ranking.</li>';
+      }
+    }
+
+    // 5. Filtrar jogos em tempo real pelo campo de busca
+    function configurarBusca() {
+      const campoBusca = document.getElementById('campoBusca');
+      const formBusca = document.getElementById('formBusca');
+      if (!campoBusca) return;
+
+      const executarFiltro = () => {
+        const termo = campoBusca.value.toLowerCase().trim();
+        const filtrados = listaDestaquesGlobal.filter(jogo =>
+          (jogo.nome && jogo.nome.toLowerCase().includes(termo)) ||
+          (jogo.plataforma && jogo.plataforma.toLowerCase().includes(termo)) ||
+          (jogo.categoria && jogo.categoria.toLowerCase().includes(termo))
+        );
+        renderizarCartoes(filtrados);
+      };
+
+      campoBusca.addEventListener('input', executarFiltro);
+
+      if (formBusca) {
+        formBusca.addEventListener('submit', (e) => {
+          e.preventDefault();
+          executarFiltro();
+        });
+      }
+    }
+
+    // Inicialização ao carregar o DOM
+    document.addEventListener('DOMContentLoaded', () => {
+      atualizarInterfaceUsuario();
+      carregarDestaques();
+      carregarRanking();
+      configurarBusca();
+    });
+  </script>
 </body>
 
 </html>

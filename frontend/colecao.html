@@ -33,7 +33,7 @@
 
   <main>
 
-    <!-- BANNER (imagem em imagens/banner.jpg) -->
+    <!-- BANNER -->
     <section class="hero">
       <h1>Retro Games <em>Conquista</em></h1>
       <p>Reviva os clássicos, organize sua coleção e mantenha suas memórias vivas.</p>
@@ -99,6 +99,9 @@
     const API_JOGOS = 'http://localhost:5000/api/jogos';
     const token = localStorage.getItem('token');
 
+    // Placeholder SVG direto na memória (evita requisições 404 de imagem inexistente)
+    const PLACEHOLDER_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='170' viewBox='0 0 300 170'><rect width='300' height='170' fill='%231b1850'/><text x='50%25' y='50%25' font-size='36' text-anchor='middle' dominant-baseline='central'>🎮</text></svg>";
+
     // 1. Guarda de autenticação: redireciona se não estiver autenticado
     if (!token) {
       alert('Precisa de iniciar sessão para aceder à sua coleção.');
@@ -153,7 +156,12 @@
           const card = document.createElement('article');
           card.className = 'game-card';
           card.innerHTML = `
-            <img src="${jogo.imagem || 'imagens/banner.jpg'}" alt="${jogo.nome}" class="game-card__capa" onerror="this.src='imagens/banner.jpg'">
+            <img 
+              src="${jogo.imagem || PLACEHOLDER_IMG}" 
+              alt="${jogo.nome}" 
+              class="game-card__capa" 
+              onerror="this.onerror=null; this.src='${PLACEHOLDER_IMG}';"
+            >
             <div class="game-card__corpo">
               <h3>${jogo.nome}</h3>
               <p><strong>Plataforma:</strong> ${jogo.plataforma}</p>

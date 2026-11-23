@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { conectarBanco } from './config/database.js';
+import destaquesRoutes from './routes/destaquesRoutes.js';
 import gameRoutes from './routes/games.routes.js';
 import authRoutes from './routes/auth.routes.js';
 
@@ -13,7 +14,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 // Registra as rotas de jogos
 app.use('/api/jogos', gameRoutes);
-
+app.use('/api', destaquesRoutes);
 app.get('/api/status', (req, res) => {
   res.json({ mensagem: 'Backend ativo!' });
 });

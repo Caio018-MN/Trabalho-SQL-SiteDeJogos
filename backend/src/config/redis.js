@@ -1,28 +1,16 @@
 import { createClient } from 'redis';
 
-let clienteRedis = null;
+const redisClient = createClient({
+  url: process.env.REDIS_URL || 'redis://localhost:6379'
+});
 
-export async function conectarRedis() {
-  try {
-    const url = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
-    clienteRedis = createClient({ url });
+redisClient.on('error', (err) => console.error('Erro no cliente Redis:', err));
+redisClient.on('connect', () => console.log('✅ Conectado ao Redis com sucesso!'));
 
-    clienteRedis.on('error', (erro) => {
-      console.warn('Aviso Redis:', erro.message);
-    });
-
-    await clienteRedis.connect();
-    console.log('Redis conectado com sucesso!');
-    return clienteRedis;
-  } catch (erro) {
-    console.warn('Aviso: Não foi possível conectar ao Redis. O ranking ficará inativo temporariamente.');
-    clienteRedis = null;
-  }
+try {
+  await redisClient.connect();
+} catch (err) {
+  console.error('Falha ao conectar ao Redis:', err);
 }
 
-export function obterRedis() {
-  if (!clienteRedis) {
-    throw new Error('Cliente Redis não conectado ou indisponível.');
-  }
-  return clienteRedis;
-}
+export default redisClient;
