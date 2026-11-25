@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retro Games Conquista | Negociações</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Rubik:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- CABEÇALHO -->
+  <header class="topo">
+    <a href="index.html" class="logo">
+      <span aria-hidden="true">🎮</span>
+      <span class="logo__nome">Retro Games<br><em>Conquista</em></span>
+    </a>
+
+    <nav class="menu" aria-label="Principal">
+      <a href="index.html" class="menu-item">🏠 Início</a>
+      <a href="colecao.html" class="menu-item">🕹️ Minha Coleção</a>
+      <a href="catalogo.html" class="menu-item active">🤝 Negociações</a>
+      <a href="login.html" id="linkAuth" class="menu-item menu-item--login">🔑 Entrar</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- BANNER -->
+    <section class="hero hero--catalogo">
+      <h1>Catálogo de <em>Negociações</em></h1>
+      <p>Escolha o jogo que você quer e fale com a gente pelo WhatsApp.</p>
+    </section>
+
+    <!-- CATÁLOGO -->
+    <section class="collection catalogo" id="catalogo">
+      <a href="index.html" class="btn-voltar">← Voltar à tela inicial</a>
+
+      <div class="section-header">
+        <div>
+          <h2>Cardápio de jogos</h2>
+          <p>Jogos disponíveis para negociação</p>
+        </div>
+        <input type="search" id="campoBusca" placeholder="Buscar jogo...">
+      </div>
+
+      <!-- Os jogos são inseridos pelo JavaScript -->
+      <div id="lista-catalogo" class="games-grid"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    Retro Games Conquista © 2026 — Games. Memories. Forever.
+  </footer>
+
+  <script>
+    const API_JOGOS = 'http://localhost:5000/api/jogos';
+    const token = localStorage.getItem('token');
+    const jogoEmFoco = new URLSearchParams(window.location.search).get('jogo');
+
+    const PLACEHOLDER_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='170' viewBox='0 0 300 170'><rect width='300' height='170' fill='%231b1850'/><text x='50%25' y='50%25' font-size='36' text-anchor='middle' dominant-baseline='central'>🎮</text></svg>";
+
+    // Guarda de autenticação (mesmo padrão da coleção)
+    if (!token) {
+      alert('Precisa de iniciar sessão para aceder às negociações.');
+      window.location.href = 'login.html';
+    }
+
+    // Evita quebrar o HTML com textos vindos do banco
+    function esc(texto) {
+      const d = document.createElement('div');
+      d.textContent = texto ?? '';
+      return d.innerHTML;
+    }
+
+    // >>> PONTO DE INTEGRAÇÃO COM A SUA API <<<
+    // Chamada ao clicar em "Chamar no WhatsApp". Troque o corpo desta função
+    // pelo link/número que a sua API devolver.
+    function abrirWhatsApp(jogo) {
+      const numero = ''; // ex.: '5577999999999' (vindo da API)
+      const msg = `Olá! Tenho interesse no jogo ${jogo.nome} (${jogo.plataforma}).`;
+      window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+    }
+
+    async function carregarCatalogo(termoBusca = '') {
+      const container = document.getElementById('lista-catalogo');
+
+      try {
+        const url = termoBusca ? `${API_JOGOS}?busca=${encodeURIComponent(termoBusca)}` : API_JOGOS;
+        const resposta = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        if (resposta.status === 401 || resposta.status === 403) {
+          localStorage.clear();
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const jogos = await resposta.json();
+        container.innerHTML = '';
+
+        if (jogos.length === 0) {
+          container.innerHTML = '<p class="empty-message" style="grid-column: 1 / -1; text-align: center;">Nenhum jogo no catálogo ainda.</p>';
+          return;
+        }
+
+        // Jogo clicado na coleção aparece primeiro
+        jogos.sort((a, b) => (String(b._id) === jogoEmFoco) - (String(a._id) === jogoEmFoco));
+
+        jogos.forEach(jogo => {
+          const card = document.createElement('article');
+          card.className = 'game-card catalogo-card' + (String(jogo._id) === jogoEmFoco ? ' em-foco' : '');
+          card.innerHTML = `
+            <img src="${jogo.imagem || PLACEHOLDER_IMG}" alt="${esc(jogo.nome)}" class="game-card__capa"
+              onerror="this.onerror=null; this.src='${PLACEHOLDER_IMG}';">
+            <div class="game-card__corpo">
+              <h3>${esc(jogo.nome)}</h3>
+              <span class="game-platform">${esc(jogo.plataforma)}</span>
+              ${jogo.anoLancamento ? `<p class="catalogo-card__meta">Ano: ${esc(jogo.anoLancamento)}</p>` : ''}
+              ${jogo.genero ? `<p class="catalogo-card__meta">${esc(jogo.genero)}</p>` : ''}
+              <button type="button" class="btn btn-whats">💬 Chamar no WhatsApp</button>
+            </div>
+          `;
+          card.querySelector('.btn-whats').addEventListener('click', () => abrirWhatsApp(jogo));
+          container.appendChild(card);
+        });
+      } catch (erro) {
+        console.error(erro);
+        container.innerHTML = `<p style="color: #ff5555; grid-column: 1 / -1; text-align: center;">Erro: ${esc(erro.message)}</p>`;
+      }
+    }
+
+    // Perfil no cabeçalho (mesmo padrão das outras páginas)
+    function atualizarInterfaceUsuario() {
+      const usuarioRaw = localStorage.getItem('usuario');
+      const linkAuth = document.getElementById('linkAuth') || document.querySelector('.menu-item--login');
+
+      if (usuarioRaw && linkAuth) {
+        const usuario = JSON.parse(usuarioRaw);
+        const nome = usuario.nomeExibicao || 'Jogador';
+
+        linkAuth.outerHTML = `
+          <div id="usuarioLogado" style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: #4ade80; font-weight: 500;">👤 ${esc(nome)}</span>
+            <button id="btnSair" type="button" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 0.75rem;">
+              Sair
+            </button>
+          </div>
+        `;
+
+        document.getElementById('btnSair').addEventListener('click', () => {
+          localStorage.removeItem('token');
+          localStorage.removeItem('usuario');
+          window.location.href = 'login.html';
+        });
+      }
+    }
+
+    atualizarInterfaceUsuario();
+    carregarCatalogo();
+
+    document.getElementById('campoBusca').addEventListener('input', (e) => carregarCatalogo(e.target.value));
+  </script>
+</body>
+
+</html>

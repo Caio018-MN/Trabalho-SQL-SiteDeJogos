@@ -809,3 +809,119 @@ input:focus {
   object-fit: cover;
   display: block;
 }
+
+/* =========================================================
+   NEGOCIAÇÕES / CATÁLOGO (catalogo.html)
+   ========================================================= */
+
+/* Botão "Negociações" dentro do card da coleção */
+.btn-negociar {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  background: #3a9a26;
+  box-shadow: 0 4px 0 #2a7219;
+  text-align: center;
+}
+
+.btn-negociar:hover {
+  background: #4bb835;
+}
+
+.btn-negociar:active {
+  box-shadow: 0 1px 0 #2a7219;
+}
+
+/* Cabeçalho do catálogo */
+.hero--catalogo {
+  padding: 40px;
+}
+
+.hero--catalogo p {
+  margin-bottom: 0;
+}
+
+.catalogo {
+  margin-top: 24px;
+}
+
+/* Cartão do catálogo (usa .game-card como base) */
+.catalogo-card {
+  position: relative;
+}
+
+.catalogo-card .game-card__corpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 12px;
+}
+
+.catalogo-card .game-card__capa {
+  border-radius: 6px;
+  background: var(--fundo-2);
+}
+
+.catalogo-card__meta {
+  font-size: 0.9rem;
+  color: var(--suave);
+}
+
+.catalogo-card .btn-whats {
+  margin-top: auto;
+}
+
+/* Jogo que o usuário clicou na coleção */
+.catalogo-card.em-foco {
+  border-color: var(--amarelo);
+  box-shadow: 0 0 0 3px rgba(255, 194, 26, 0.35);
+}
+
+.catalogo-card.em-foco::before {
+  content: "★ Selecionado";
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 1;
+  padding: 2px 10px;
+  background: var(--amarelo);
+  color: #1b1850;
+  border-radius: 6px;
+  font: 700 0.8rem var(--fonte-texto);
+}
+
+/* Botão do WhatsApp */
+.btn-whats {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px;
+  background: #25a244;
+  box-shadow: 0 4px 0 #177a2f;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.btn-whats:hover {
+  background: #2fc055;
+}
+
+.btn-whats:active {
+  box-shadow: 0 1px 0 #177a2f;
+}
+
+.btn-voltar {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--roxo-claro);
+  font-weight: 500;
+}
+
+.btn-voltar:hover {
+  color: var(--texto);
+}
+
+.catalogo-card .game-platform {
+  align-self: flex-start;
+}
