@@ -98,4 +98,53 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
+// Rota para atualizar campos do jogo (como anunciado ou favorito)
+router.put('/jogos/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const atualizacoes = req.body;
+    const colecao = obterColecao('games');
+
+    const resultado = await colecao.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: atualizacoes }
+    );
+
+    if (resultado.matchedCount === 0) {
+      return res.status(404).json({ erro: 'Jogo não encontrado.' });
+    }
+
+    return res.json({ sucesso: true, modificado: resultado.modifiedCount });
+  } catch (erro) {
+    console.error('Erro ao atualizar jogo:', erro);
+    return res.status(500).json({ erro: 'Erro interno ao atualizar jogo.' });
+  }
+});// Rota PUT para atualizar o estado do jogo (anunciado, favorito, etc.)
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { anunciado, favorito } = req.body;
+    const colecao = obterColecao('games');
+
+    const updateFields = {};
+    if (typeof anunciado !== 'undefined') updateFields.anunciado = anunciado;
+    if (typeof favorito !== 'undefined') updateFields.favorito = favorito;
+
+    const resultado = await colecao.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateFields }
+    );
+
+    if (resultado.matchedCount === 0) {
+      return res.status(404).json({ erro: 'Jogo não encontrado no banco.' });
+    }
+
+    return res.json({ sucesso: true, modificado: resultado.modifiedCount });
+  } catch (erro) {
+    console.error('Erro ao atualizar jogo:', erro);
+    return res.status(500).json({ erro: erro.message });
+  }
+});
+
 export default router;

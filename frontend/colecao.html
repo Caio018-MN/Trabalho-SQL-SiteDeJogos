@@ -155,26 +155,32 @@
           const card = document.createElement('article');
           card.className = 'game-card';
           card.innerHTML = `
-            <img 
-              src="${jogo.imagem || PLACEHOLDER_IMG}" 
-              alt="${jogo.nome}" 
-              class="game-card__capa" 
-              onerror="this.onerror=null; this.src='${PLACEHOLDER_IMG}';"
-            >
-            <div class="game-card__corpo">
-              <h3>${jogo.nome}</h3>
-              <p><strong>Plataforma:</strong> ${jogo.plataforma}</p>
-              ${jogo.anoLancamento ? `<p><strong>Ano:</strong> ${jogo.anoLancamento}</p>` : ''}
-              <div class="game-card__acoes" style="margin-top: 10px; display: flex; gap: 8px;">
-                <button type="button" class="btn btn-fav" onclick="alternarFavorito('${jogo._id}')">
-                  ${jogo.favorito ? '★ Favorito' : '☆ Favoritar'}
-                </button>
-                <button type="button" class="btn btn-remover" onclick="removerJogo('${jogo._id}')" style="background: #c0392b;">
-                  🗑️
-                </button>
-              </div>
-            </div>
-          `;
+  <img
+    src="${jogo.imagem || PLACEHOLDER_IMG}"
+    alt="${jogo.nome}"
+    class="game-card__capa"
+    onerror="this.onerror=null; this.src='${PLACEHOLDER_IMG}';"
+  >
+  <div class="game-card__corpo">
+    <h3>${jogo.nome}</h3>
+    <p><strong>Plataforma:</strong> ${jogo.plataforma}</p>
+    ${jogo.anoLancamento ? `<p><strong>Ano:</strong> ${jogo.anoLancamento}</p>` : ''}
+    
+    <div class="game-card__acoes" style="margin-top: 12px; display: flex; gap: 6px; align-items: center; width: 100%;">
+      <button type="button" class="btn btn-fav" onclick="alternarFavorito('${jogo._id}', event)" style="flex: 1; padding: 6px 4px; font-size: 0.75rem; white-space: nowrap; text-align: center;">
+        ${jogo.favorito ? '★ Favorito' : '☆ Favoritar'}
+      </button>
+      
+      <button type="button" class="btn" onclick="anunciarJogo('${jogo._id}', event)" style="flex: 1; background: #16a34a; color: #fff; border: none; padding: 6px 4px; font-size: 0.75rem; border-radius: 6px; white-space: nowrap; cursor: pointer; text-align: center;">
+        📢 Anunciar
+      </button>
+
+      <button type="button" class="btn btn-remover" onclick="removerJogo('${jogo._id}', event)" style="background: #c0392b; color: #fff; border: none; padding: 6px 8px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; flex-shrink: 0;">
+        🗑️
+      </button>
+    </div>
+  </div>
+`;
           container.appendChild(card);
         });
       } catch (erro) {
@@ -277,6 +283,34 @@
     const campoBusca = document.getElementById('campoBusca');
     if (campoBusca) {
       campoBusca.addEventListener('input', (e) => carregarJogos(e.target.value));
+    }
+
+    // 1. Função para marcar o jogo como anunciado e abrir o catálogo
+    async function anunciarJogo(jogoId, event) {
+      if (event) event.stopPropagation();
+
+      try {
+        const token = localStorage.getItem('token');
+        const resposta = await fetch(`http://localhost:5000/api/jogos/${jogoId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ anunciado: true })
+        });
+
+        if (!resposta.ok) {
+          const err = await resposta.json().catch(() => ({}));
+          throw new Error(err.erro || `Erro HTTP ${resposta.status}`);
+        }
+
+        // Só redireciona se a gravação no MongoDB foi concluída com sucesso
+        window.location.href = `catalogo.html?jogo=${jogoId}`;
+      } catch (erro) {
+        console.error('Erro ao anunciar:', erro);
+        alert(`Não foi possível anunciar: ${erro.message}`);
+      }
     }
   </script>
 </body>

@@ -104,11 +104,15 @@
           return;
         }
 
-        const jogos = await resposta.json();
+        const dadosJogos = await resposta.json();
         container.innerHTML = '';
 
+        // FILTRO: exibe apenas jogos que foram marcados com anunciado: true
+        // (ou mantém o jogo em foco aberto via URL, se existir)
+        const jogos = dadosJogos.filter(j => j.anunciado === true || String(j._id) === jogoEmFoco);
+
         if (jogos.length === 0) {
-          container.innerHTML = '<p class="empty-message" style="grid-column: 1 / -1; text-align: center;">Nenhum jogo no catálogo ainda.</p>';
+          container.innerHTML = '<p class="empty-message" style="grid-column: 1 / -1; text-align: center;">Nenhum jogo anunciado no catálogo ainda.</p>';
           return;
         }
 
